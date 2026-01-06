@@ -11,8 +11,7 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	var window []float64
-	windowSize := 20 // Smaller window for faster adaptation
-
+	windowSize := 20
 	for scanner.Scan() {
 		line := scanner.Text()
 		value, err := strconv.ParseFloat(line, 64)
@@ -20,27 +19,17 @@ func main() {
 			continue
 		}
 
-		// PREDICT FIRST (before adding current value)
-		if len(window) < 2 {
-			// Not enough data for good prediction
-			fmt.Println("0 300")
+		if len(window) < 4 {
+			fmt.Println("0 200")
 		} else {
 			m := CalculateMean(window)
 			s := CalculateStdDev(window, m)
-
-			// Ensure minimum stddev to avoid zero ranges
-			if s < 10 {
-				s = 10
-			}
-
-			k := 2.5 // Increased from 2.0 for better coverage
+			k := 2.0
 			lower := m - (k * s)
 			upper := m + (k * s)
 
 			fmt.Printf("%d %d\n", int(math.Round(lower)), int(math.Round(upper)))
 		}
-
-		// THEN ADD to window (for next prediction)
 		window = append(window, value)
 		if len(window) > windowSize {
 			window = window[1:]
