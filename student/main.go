@@ -19,14 +19,25 @@ func main() {
 			continue
 		}
 
-		if len(window) < 4 {
+		if len(window) < 2 {
 			fmt.Println("0 200")
 		} else {
 			m := CalculateMean(window)
 			s := CalculateStdDev(window, m)
-			k := 2.0
-			lower := m - (k * s)
-			upper := m + (k * s)
+			cv := CV(m, s)
+			if cv <= 10.0 {
+				k := 1.0
+				lower := m - (k * s)
+				upper := m + (k * s)
+			} else if cv > 10.0 && cv < 20.0 {
+				k := 2.0
+				lower := m - (k * s)
+				upper := m + (k * s)
+			} else {
+				k := 3.0
+				lower := m - (k * s)
+				upper := m + (k * s)
+			}
 
 			fmt.Printf("%d %d\n", int(math.Round(lower)), int(math.Round(upper)))
 		}
@@ -70,4 +81,11 @@ func CalculateVariance(data []float64, m float64) float64 {
 
 func CalculateStdDev(data []float64, m float64) float64 {
 	return math.Sqrt(CalculateVariance(data, m))
+}
+
+func CV(mean float64, std float64) float64 {
+	if mean == 0 {
+		return 0.0
+	}
+	return (std / mean) * 100
 }
