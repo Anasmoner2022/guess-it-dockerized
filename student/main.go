@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package main
 
 import (
@@ -119,5 +120,7 @@ func CV(mean float64, std float64) float64 {
 	if mean == 0 {
 		return 0.0
 	}
-	return (std / mean) * 100
+
+return (std / mean) * 100
 }
+
